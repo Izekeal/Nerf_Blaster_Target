@@ -77,16 +77,12 @@ void updateTimer(){
 
 //To:do - Update this function and add comments as I go
 void updateScore(){
-  if ((a.shot() == true) && (targetReady == true)){
-    gameScore += 1;
-    targetReady = false;
-    targetCheck = millis();
-    a.ledON();
-  }
-  
-  if ((millis() - targetCheck > 500) && (a.ready() == true)){
-    targetReady = true;
-    a.ledOFF();
+  if (a.ready() == true){
+    if (a.shot() == true){
+      gameScore += 1;
+      //This should instead turn the LED off as the target has been hit.
+      a.ledON();
+    }
   }
 }
 
