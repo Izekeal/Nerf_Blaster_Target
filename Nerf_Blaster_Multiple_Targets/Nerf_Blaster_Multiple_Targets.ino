@@ -1,4 +1,4 @@
-//NERF target practice game
+// NERF target practice game
 
 #include <LiquidCrystal_I2C.h>
 
