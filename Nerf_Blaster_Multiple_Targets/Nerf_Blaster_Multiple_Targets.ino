@@ -97,14 +97,14 @@ void updateTimer(){
 //c.shot();
 void updateScore(){
 //  if ((digitalRead(PIN_LINE_TRACKER1) == LOW) && (targetReady == true)){
-    if (a.shot() == true){
+    if ((a.shot() == true) && (targetReady == true)){
       gameScore += 1;
       targetReady = false;
       targetCheck = millis();
       a.ledON();
   }
   
-  if ((millis() - targetCheck > 500) && (a.ready())){
+  if ((millis() - targetCheck > 500) && (a.ready() == true)){
     targetReady = true;
     a.ledOFF();
   }
