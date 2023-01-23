@@ -1,20 +1,28 @@
-// NERF target practice game
+//NERF target practice game
 
 #include <LiquidCrystal_I2C.h>
+#include <Target.h>
 
-//to-do: find the piezo speaker and hook it up to pin 6
+
+//to-do: find the piezo speaker and hook it up to a PWM pin
 //all piezo code is commented out for now
 //#define PIN_PIEZO 6
 
 #define PIN_RESET 8
 
-#define PIN_LED_BLUE 5
-#define PIN_LED_WHITE 6
-#define PIN_LED_GREEN 7
-#define PIN_LINE_TRACKER1a 4
-#define PIN_LINE_TRACKER1b 9
-#define PIN_LINE_TRACKER2 10
-#define PIN_LINE_TRACKER3 11
+//#define PIN_LED_BLUE 5
+//#define PIN_LED_WHITE 6
+//#define PIN_LED_GREEN 7
+//#define PIN_LINE_TRACKER1 4
+//#define PIN_LINE_TRACKER2 10
+//#define PIN_LINE_TRACKER3 11
+
+
+//Set up three targets
+//TargetID, Line Tracker Pin, LED Pin, Is the target active, is the target's LED active, has the target detected a shot
+Target a(0,4,5,false,false,false);
+Target b(1,10,6,false,false,false);
+Target c(2,11,7,false,false,false);
 
 //16 segment, 2 row LCD display, address = 0x27
 LiquidCrystal_I2C lcd(0x27,16,2);
@@ -37,13 +45,12 @@ void setup() {
 
   //Initialize the LED and the Line Trackers
   //pinMode(PIN_PIEZO, OUTPUT);
-  pinMode(PIN_LED_BLUE, OUTPUT);
-  pinMode(PIN_LED_WHITE, OUTPUT);
-  pinMode(PIN_LED_GREEN, OUTPUT);
-  pinMode(PIN_LINE_TRACKER1a, INPUT);
-  pinMode(PIN_LINE_TRACKER1b, INPUT);
-  pinMode(PIN_LINE_TRACKER2, INPUT);
-  pinMode(PIN_LINE_TRACKER3, INPUT);
+  //pinMode(PIN_LED_BLUE, OUTPUT);
+  //pinMode(PIN_LED_WHITE, OUTPUT);
+  //pinMode(PIN_LED_GREEN, OUTPUT);
+  //pinMode(PIN_LINE_TRACKER1, INPUT);
+  //pinMode(PIN_LINE_TRACKER2, INPUT);
+  //pinMode(PIN_LINE_TRACKER3, INPUT);
 
   pinMode(PIN_RESET, INPUT_PULLUP);
 
@@ -83,17 +90,23 @@ void updateTimer(){
 
 //Update the score only if the target has been hit from a neutral position
 //Using targetReady prevents the score from being increased indefinitely while a LOW state is detected
+
+//updateScore now needs to read something like this:
+//a.shot();
+//b.shot();
+//c.shot();
 void updateScore(){
-  if (((digitalRead(PIN_LINE_TRACKER1a) == LOW) or (digitalRead(PIN_LINE_TRACKER1b) == LOW)) && (targetReady == true)){
-    gameScore += 1;
-    targetReady = false;
-    targetCheck = millis();
-    bLEDon();
+//  if ((digitalRead(PIN_LINE_TRACKER1) == LOW) && (targetReady == true)){
+    if (a.shot() == true){
+      gameScore += 1;
+      targetReady = false;
+      targetCheck = millis();
+      a.ledON();
   }
   
-  if ((millis() - targetCheck > 500) && ((digitalRead(PIN_LINE_TRACKER1a) == HIGH) && (digitalRead(PIN_LINE_TRACKER1b) == HIGH))){
+  if ((millis() - targetCheck > 500) && (a.ready())){
     targetReady = true;
-    bLEDoff();
+    a.ledOFF();
   }
 }
 
@@ -121,7 +134,7 @@ void gameEnd(){
   lcd.setCursor(0,1);
   lcd.print("Final Score: ");
   lcd.print(gameScore);
-  aLEDon();
+  a.ledON();
   
 }
 
@@ -129,7 +142,7 @@ void gameEnd(){
 //to-do: Add a countdown timer from 5 seconds to the for loop, maybe an animation for fun
 //with some beeps from the Piezo speaker for each second of the countdown, LEDs could blink as well
 void gameBegin(){
-  aLEDon();
+  a.ledON();
   lcd.setCursor(1,0);
   lcd.print("   NERF TEST");
   lcd.setCursor(0,1);
@@ -144,7 +157,7 @@ void gameBegin(){
   
   lcd.clear();
   //The game begins when the LEDs turn off
-  aLEDoff();
+  a.ledOFF();
   timerStart = millis();
   gameRunning = true;
   targetReady = true;
@@ -154,7 +167,7 @@ void gameBegin(){
   activeTargets = 0;
 
 }
-
+/*
 void aLEDon(){
   digitalWrite(PIN_LED_BLUE,HIGH);
   digitalWrite(PIN_LED_WHITE,HIGH);
@@ -190,3 +203,4 @@ void gLEDon(){
 void gLEDoff(){
   digitalWrite(PIN_LED_GREEN,LOW);
 }
+*/
