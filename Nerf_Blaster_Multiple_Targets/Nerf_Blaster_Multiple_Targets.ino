@@ -13,6 +13,17 @@
 //Set up three targets
 //TargetID, Line Tracker Pin, LED Pin, Is the target active, is the target's LED active, has the target detected a shot
 //To:do - find out if the boolean values are needed
+
+// If the booleans are not needed you can default them to false in the class
+// and set them through separate methods for each boolean variable.
+// If you go with this approach then setup two constructors
+// one that only accepts the integers and defaults the booleans
+// and another that accepts the integers and all the booleans
+
+// C++ is a wild beast.
+// Be sure to read this to have a better understanding what the next three lines are doing.
+// I had to refresh myself on this as class instantiation is VERY different in C++ compared to other lanuages I regularly use.
+// (see: https://www.geeksforgeeks.org/different-ways-to-instantiate-an-object-in-c-with-examples/)
 Target a(0,4,5,false,false,false);
 Target b(1,10,6,false,false,false);
 Target c(2,11,7,false,false,false);
