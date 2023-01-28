@@ -26,8 +26,6 @@ bool lcdClear;
 int gameTimer;
 int gameScore;
 //Three targets at the moment, 0,1,2.  This variable == true when a target can be shot at
-//NEW: Temporary fix for Target C misbehaving is to increase the array size by 1 and have a "dummy" target at position 3 in the array
-//To-do: Find out why this fixes the bug
 bool activeTarget[3];
 int getTarget;
 unsigned long targetDelay;
@@ -105,9 +103,6 @@ void updateScore(){
   if (activeTarget[2] == true){
     c.LED(true);
     if (c.shot() == true){
-      //to-do: Find out why this resets gameScore to zero on a successful shot instead of incrementing it,
-      //and also sets the score to a static value of one when this target becomes active
-      //Theories: Pin 11 on Arduino is bad, connector on breadboard is bad, using two jumper cables and the breadboard as an inbetween is bad
       gameScore ++;
       activeTarget[2] = false;
       c.LED(false);
