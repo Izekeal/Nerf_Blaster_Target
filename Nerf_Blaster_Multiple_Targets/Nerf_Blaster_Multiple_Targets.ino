@@ -26,7 +26,9 @@ bool lcdClear;
 int gameTimer;
 int gameScore;
 //Three targets at the moment, 0,1,2.  This variable == true when a target can be shot at
-bool activeTarget[2];
+//NEW: Temporary fix for Target C misbehaving is to increase the array size by 1 and have a "dummy" target at position 3 in the array
+//To-do: Find out why this fixes the bug
+bool activeTarget[3];
 int getTarget;
 unsigned long targetDelay;
 unsigned long timerStart;
@@ -120,7 +122,7 @@ void newTarget(){
   if (millis() - targetDelay > 1250){
     targetDelay = millis();
     //Pick a random target, choices are 0, 1, 2
-    getTarget = random(3);
+    getTarget = random(0,3);
     //Would be nice to pass this value to the Target class instead of using a separate boolean array
     if (activeTarget[getTarget] == false){
       activeTarget[getTarget] = true;
