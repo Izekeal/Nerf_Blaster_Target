@@ -16,9 +16,7 @@ else{
   _shotDetect = false;
   }
 return _shotDetect;
-}
-void Target::reset(){
-	_shotDetect = false;
+_shotDetect = false;
 }
 void Target::LED(bool ledActive){
   _ledActive = ledActive;

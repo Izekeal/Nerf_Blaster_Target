@@ -4,7 +4,6 @@ class Target {
   public:
     Target(int targetNum, int ltPin, int ledPin, bool active, bool ledActive, bool shotDetect);
     bool shot();
-	void reset();
     void LED(bool ledActive);
   private:
     int _ltPin;

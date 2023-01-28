@@ -90,7 +90,6 @@ void updateScore(){
       gameScore ++;
       activeTarget[0] = false;
       a.LED(false);
-      a.reset();
     }
   }
   if (activeTarget[1] == true){
@@ -99,18 +98,17 @@ void updateScore(){
       gameScore ++;
       activeTarget[1] = false;
       b.LED(false);
-      b.reset();
     }
   }
   if (activeTarget[2] == true){
     c.LED(true);
     if (c.shot() == true){
-      //to-do: Find out why this resets gameScore to zero instead of incrementing it
-      //when the other two targets work properly
+      //to-do: Find out why this resets gameScore to zero on a successful shot instead of incrementing it,
+      //and also sets the score to a static value of one when this target becomes active
+      //Theories: Pin 11 on Arduino is bad, connector on breadboard is bad, using two jumper cables and the breadboard as an inbetween is bad
       gameScore ++;
       activeTarget[2] = false;
       c.LED(false);
-      c.reset();
     }
   }
 }
@@ -148,6 +146,8 @@ void gameEnd(){
   lcd.print("Final Score: ");
   lcd.print(gameScore);
   a.LED(true);
+  b.LED(true);
+  c.LED(true);
 }
 
 //Display the game start screen
@@ -155,6 +155,8 @@ void gameEnd(){
 //with some beeps from the Piezo speaker for each second of the countdown, LEDs could blink as well
 void gameBegin(){
   a.LED(true);
+  b.LED(true);
+  c.LED(true);
   lcd.setCursor(1,0);
   lcd.print("   NERF TEST");
   lcd.setCursor(0,1);
@@ -167,12 +169,14 @@ void gameBegin(){
     //noTone(PIN_PIEZO);
   }
   
-  for (byte i = 0; i < 2; i++){
+  for (byte i = 0; i < 3; i++){
     activeTarget[i] = false;
   }
   lcd.clear();
   //The game begins when the LEDs turn off
   a.LED(false);
+  b.LED(false);
+  c.LED(false);
   timerStart = millis();
   targetDelay = millis();
   gameRunning = true;
