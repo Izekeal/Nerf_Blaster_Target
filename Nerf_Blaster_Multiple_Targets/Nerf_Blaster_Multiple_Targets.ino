@@ -22,12 +22,13 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 
 //To:do - check each variable here, determine which are no longer needed
 bool gameRunning;
-bool targetReady;
 bool lcdClear;
 int gameTimer;
 int gameScore;
-int activeTargets;
-unsigned int targetCheck;
+//Three targets at the moment, 0,1,2.  This variable == true when a target can be shot at
+bool activeTarget[2];
+int getTarget;
+unsigned long targetDelay;
 unsigned long timerStart;
 
 void setup() {
@@ -40,6 +41,9 @@ void setup() {
   //Initialize the Piezo Speaker
   //pinMode(PIN_PIEZO, OUTPUT);
 
+  //Initialize pseudo-random number generator, on an unconnected pin (Analog 9)
+  randomSeed(analogRead(9));
+
   pinMode(PIN_RESET, INPUT_PULLUP);
 
   gameBegin();
@@ -48,7 +52,7 @@ void setup() {
 void loop() {
   if(gameRunning){
     updateLCD();
-    //newTarget();
+    newTarget();
     updateScore();
     updateTimer();
   }
@@ -76,23 +80,55 @@ void updateTimer(){
 
 
 //To:do - Update this function and add comments as I go
+//Can make a separate conditional statement for each target, at least to begin with
+//The statement checks to see if the target is "active" and only then will it check to see
+//if the target has been shot
+//This condition will likely replace the Target.ready() function call
 void updateScore(){
-  if (a.ready() == true){
+  if (activeTarget[0] == true){
+    a.ledON();
     if (a.shot() == true){
-      gameScore += 1;
-      //This should instead turn the LED off as the target has been hit.
-      a.ledON();
+      gameScore ++;
+      activeTarget[0] = false;
+      a.ledOFF();
+      a.reset();
+    }
+  }
+  if (activeTarget[1] == true){
+    b.ledON();
+    if (b.shot() == true){
+      gameScore ++;
+      activeTarget[1] = false;
+      b.ledOFF();
+      b.reset();
+    }
+  }
+  if (activeTarget[2] == true){
+    c.ledON();
+    if (c.shot() == true){
+      //to-do: Find out why this resets gameScore to zero instead of incrementing it
+      //when the other two targets work properly
+      gameScore ++;
+      activeTarget[2] = false;
+      c.ledOFF();
+      c.reset();
     }
   }
 }
 
 //Wait a random amount of time and then make a new target active, light up its corresponding LED to show the player which target is active
-//Tell the game which targets are active so it can monitor those targets in updateScore
-//void newTarget(){
-//  if (activeTargets < 3){
-//    
-//  }
-//}
+//Tell the game which targets are active using activeTarget array so it can monitor those targets in updateScore
+void newTarget(){
+  if (millis() - targetDelay > 1250){
+    targetDelay = millis();
+    //Pick a random number, choices are 0, 1, 2
+    getTarget = random(3);
+    if (activeTarget[getTarget] == false){
+      activeTarget[getTarget] = true;
+    }
+  }
+}
+
 void updateLCD(){
   lcd.setCursor(1,0);
   lcd.print("Timer: ");
@@ -130,14 +166,16 @@ void gameBegin(){
     //noTone(PIN_PIEZO);
   }
   
+  for (byte i = 0; i < 2; i++){
+    activeTarget[i] = false;
+  }
   lcd.clear();
   //The game begins when the LEDs turn off
   a.ledOFF();
   timerStart = millis();
+  targetDelay = millis();
   gameRunning = true;
-  targetReady = true;
   lcdClear = false;
   gameScore = 0;
   gameTimer = 45;
-  activeTargets = 0;
 }
