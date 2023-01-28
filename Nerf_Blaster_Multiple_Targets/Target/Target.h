@@ -1,18 +1,15 @@
 #ifndef Target_h
 #define Target_h
-#include "Arduino.h"
 class Target {
   public:
     Target(int targetNum, int ltPin, int ledPin, bool active, bool ledActive, bool shotDetect);
     bool shot();
-    bool ready();
 	void reset();
-    void ledON();
-    void ledOFF();
+    void LED(bool ledActive);
   private:
     int _ltPin;
     int _ledPin;
-    bool _active;
+	bool _ledActive;
     bool _shotDetect;
 };
 #endif

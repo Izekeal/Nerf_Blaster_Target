@@ -83,34 +83,33 @@ void updateTimer(){
 //Can make a separate conditional statement for each target, at least to begin with
 //The statement checks to see if the target is "active" and only then will it check to see
 //if the target has been shot
-//This condition will likely replace the Target.ready() function call
 void updateScore(){
   if (activeTarget[0] == true){
-    a.ledON();
+    a.LED(true);
     if (a.shot() == true){
       gameScore ++;
       activeTarget[0] = false;
-      a.ledOFF();
+      a.LED(false);
       a.reset();
     }
   }
   if (activeTarget[1] == true){
-    b.ledON();
+    b.LED(true);
     if (b.shot() == true){
       gameScore ++;
       activeTarget[1] = false;
-      b.ledOFF();
+      b.LED(false);
       b.reset();
     }
   }
   if (activeTarget[2] == true){
-    c.ledON();
+    c.LED(true);
     if (c.shot() == true){
       //to-do: Find out why this resets gameScore to zero instead of incrementing it
       //when the other two targets work properly
       gameScore ++;
       activeTarget[2] = false;
-      c.ledOFF();
+      c.LED(false);
       c.reset();
     }
   }
@@ -119,10 +118,12 @@ void updateScore(){
 //Wait a random amount of time and then make a new target active, light up its corresponding LED to show the player which target is active
 //Tell the game which targets are active using activeTarget array so it can monitor those targets in updateScore
 void newTarget(){
+  //Activate a new target after a delay of 1.25 seconds.  Eventually this will be a random amount of time
   if (millis() - targetDelay > 1250){
     targetDelay = millis();
-    //Pick a random number, choices are 0, 1, 2
+    //Pick a random target, choices are 0, 1, 2
     getTarget = random(3);
+    //Would be nice to pass this value to the Target class instead of using a separate boolean array
     if (activeTarget[getTarget] == false){
       activeTarget[getTarget] = true;
     }
@@ -146,14 +147,14 @@ void gameEnd(){
   lcd.setCursor(0,1);
   lcd.print("Final Score: ");
   lcd.print(gameScore);
-  a.ledON();
+  a.LED(true);
 }
 
 //Display the game start screen
 //to-do: Add a countdown timer from 5 seconds to the for loop, maybe an animation for fun
 //with some beeps from the Piezo speaker for each second of the countdown, LEDs could blink as well
 void gameBegin(){
-  a.ledON();
+  a.LED(true);
   lcd.setCursor(1,0);
   lcd.print("   NERF TEST");
   lcd.setCursor(0,1);
@@ -171,7 +172,7 @@ void gameBegin(){
   }
   lcd.clear();
   //The game begins when the LEDs turn off
-  a.ledOFF();
+  a.LED(false);
   timerStart = millis();
   targetDelay = millis();
   gameRunning = true;

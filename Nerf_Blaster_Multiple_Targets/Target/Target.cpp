@@ -5,7 +5,7 @@ Target::Target(int targetNum, int ltPin, int ledPin, bool active, bool ledActive
   pinMode(ledPin, OUTPUT);
   _ltPin = ltPin;
   _ledPin = ledPin;
-  _active = active;
+  _ledActive = ledActive;
   _shotDetect = shotDetect;
 }
 bool Target::shot(){
@@ -17,18 +17,15 @@ else{
   }
 return _shotDetect;
 }
-bool Target::ready(){
-if (digitalRead(_ltPin) == HIGH){
-  _active = true;
-  return _active;
-  }
-}
 void Target::reset(){
 	_shotDetect = false;
 }
-void Target::ledON(){
-digitalWrite(_ledPin, HIGH);
-}
-void Target::ledOFF(){
-digitalWrite(_ledPin, LOW);
+void Target::LED(bool ledActive){
+  _ledActive = ledActive;
+  if (_ledActive == true){
+	  digitalWrite(_ledPin, HIGH);
+  }
+  if (_ledActive == false){
+	  digitalWrite(_ledPin, LOW);
+  }
 }
