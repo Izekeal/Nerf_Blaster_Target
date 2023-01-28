@@ -6,6 +6,7 @@ class Target {
     Target(int targetNum, int ltPin, int ledPin, bool active, bool ledActive, bool shotDetect);
     bool shot();
     bool ready();
+	void reset();
     void ledON();
     void ledOFF();
   private:

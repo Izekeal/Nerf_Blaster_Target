@@ -9,9 +9,8 @@ Target::Target(int targetNum, int ltPin, int ledPin, bool active, bool ledActive
   _shotDetect = shotDetect;
 }
 bool Target::shot(){
-if ((digitalRead(_ltPin) == LOW) && (_active == true)){
+if (digitalRead(_ltPin) == LOW){
   _shotDetect = true;
-  _active = false;
   }
 else{
   _shotDetect = false;
@@ -23,6 +22,9 @@ if (digitalRead(_ltPin) == HIGH){
   _active = true;
   return _active;
   }
+}
+void Target::reset(){
+	_shotDetect = false;
 }
 void Target::ledON(){
 digitalWrite(_ledPin, HIGH);
