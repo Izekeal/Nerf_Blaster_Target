@@ -8,14 +8,18 @@
 //all piezo code is commented out for now
 //#define PIN_PIEZO 6
 
-#define PIN_RESET 8
+#define PIN_RESET 11
 
-//Set up three targets
+//Set up six targets using the Target class
 //TargetID, Line Tracker Pin, LED Pin, Is the target active, is the target's LED active, has the target detected a shot
 //To:do - find out if the boolean values are needed
-Target a(0,4,5,false,false,false);
-Target b(1,10,6,false,false,false);
-Target c(2,11,7,false,false,false);
+Target a(0,18,4,false,false,false);
+Target b(1,19,5,false,false,false);
+Target c(2,20,6,false,false,false);
+Target d(3,21,7,false,false,false);
+Target e(3,22,8,false,false,false);
+//Use pin 10 for LED as pin 9 is being left unused for random number generation
+Target f(3,23,10,false,false,false);
 
 //16 segment, 2 row LCD display, address = 0x27
 LiquidCrystal_I2C lcd(0x27,16,2);
@@ -25,8 +29,8 @@ bool gameRunning;
 bool lcdClear;
 int gameTimer;
 int gameScore;
-//Three targets at the moment, 0,1,2.  This variable == true when a target can be shot at
-bool activeTarget[3];
+//Six targets at the moment, 0,1,2,3,4,5.  This variable == true when a target can be shot at
+bool activeTarget[6];
 int getTarget;
 unsigned long targetDelay;
 unsigned long timerStart;
@@ -54,6 +58,8 @@ void loop() {
     updateLCD();
     newTarget();
     updateScore();
+    //Add a function that manages "cooldowns" for the targets, a period of time
+    //when the target is left off before it can be activated again
     updateTimer();
   }
   if (digitalRead(PIN_RESET) == LOW){
@@ -108,6 +114,30 @@ void updateScore(){
       c.LED(false);
     }
   }
+  if (activeTarget[3] == true){
+    d.LED(true);
+    if (d.shot() == true){
+      gameScore ++;
+      activeTarget[3] = false;
+      d.LED(false);
+    }
+  }
+  if (activeTarget[4] == true){
+    e.LED(true);
+    if (e.shot() == true){
+      gameScore ++;
+      activeTarget[4] = false;
+      e.LED(false);
+    }
+  }
+  if (activeTarget[5] == true){
+    f.LED(true);
+    if (f.shot() == true){
+      gameScore ++;
+      activeTarget[5] = false;
+      f.LED(false);
+    }
+  }
 }
 
 //Wait a random amount of time and then make a new target active, light up its corresponding LED to show the player which target is active
@@ -117,7 +147,7 @@ void newTarget(){
   if (millis() - targetDelay > 1250){
     targetDelay = millis();
     //Pick a random target, choices are 0, 1, 2
-    getTarget = random(0,3);
+    getTarget = random(0,6);
     //Would be nice to pass this value to the Target class instead of using a separate boolean array
     if (activeTarget[getTarget] == false){
       activeTarget[getTarget] = true;
@@ -145,6 +175,9 @@ void gameEnd(){
   a.LED(true);
   b.LED(true);
   c.LED(true);
+  d.LED(true);
+  e.LED(true);
+  f.LED(true);
 }
 
 //Display the game start screen
@@ -154,6 +187,9 @@ void gameBegin(){
   a.LED(true);
   b.LED(true);
   c.LED(true);
+  d.LED(true);
+  e.LED(true);
+  f.LED(true);
   lcd.setCursor(1,0);
   lcd.print("   NERF TEST");
   lcd.setCursor(0,1);
@@ -174,6 +210,9 @@ void gameBegin(){
   a.LED(false);
   b.LED(false);
   c.LED(false);
+  d.LED(false);
+  e.LED(false);
+  f.LED(false);
   timerStart = millis();
   targetDelay = millis();
   gameRunning = true;
