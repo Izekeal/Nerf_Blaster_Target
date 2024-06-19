@@ -8,4 +8,4 @@ Targets light up at random intervals and line trackers report back a successful 
 # Requirements
 Hardware
 
-[Arduino Micro | https://store-usa.arduino.cc/products/arduino-micro?selectedStore=us]
+[Arduino Micro](https://store-usa.arduino.cc/products/arduino-micro?selectedStore=us)
